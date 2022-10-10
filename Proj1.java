@@ -273,9 +273,9 @@ public class Proj1
         int width = copy[0].length;
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                int aliveNeighbors = FindNeighbors(board, x, y);
+                int aliveNeighbors = FindNeighbors(copy, x, y);
 
-                if (getState(board, x, y) == 1) {
+                if (getState(copy, x, y) == 1) {
                     if (aliveNeighbors < 2) {
                         copy[x][y] = '.';
                     } else if (aliveNeighbors == 2 || aliveNeighbors == 3) {
