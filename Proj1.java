@@ -10,9 +10,9 @@ public class Proj1
 {
     public static void main(String args[])
     {
-        P1();
-        P2();
-        P3();
+      //  P1();
+       // P2();
+       // P3();
         P4();
     }
    
@@ -249,17 +249,19 @@ public class Proj1
                            {'.', '.', '.', '.', '.'}};
         System.out.println("Enter the number of generations:");
         int nGens = in.nextInt();
+        System.out.println("Start State");
         PrintBoard(board);
         for (int i = 0; i < nGens; i++) {
-            Iterate(board);
-            PrintBoard(board);   
+            board = Iterate(board);
+            PrintBoard(board);
         }
+        System.out.println("End State");
     }
     /**
      * Method to Iterate to next generation
      * 
      */
-    static void Iterate(char[][] board)
+    static char [][] Iterate(char[][] board)
     {
         // Need to create a copy of the matrix board
         // Then need two loops simuluar to loops in Grid.jav
@@ -267,43 +269,83 @@ public class Proj1
         // Then follow the rules to place a '*' or '.' in cell i,j
         // After all iterations copy the temporary board back to the original board
         char copy[][] = board;
+        int height = copy.length;
+        int width = copy[0].length;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int aliveNeighbors = FindNeighbors(board, x, y);
+
+                if (getState(board, x, y) == 1) {
+                    if (aliveNeighbors < 2) {
+                        copy[x][y] = '.';
+                    } else if (aliveNeighbors == 2 || aliveNeighbors == 3) {
+                        copy[x][y] = '*';
+                    } else if (aliveNeighbors > 3) {
+                        copy[x][y] = '.';
+                    }
+                } else {
+                    if (aliveNeighbors == 3) {
+                        copy[x][y] = '*';
+                    }
+                }
+            }
+        }
+        return copy;
     }
+
     /**
      * Method to display Life game board
      * 
      */
     static void PrintBoard(char [][] board)
     {
-        // Example avialble on canvas called Grid.java
+        System.out.println();
+        int height = board.length;
+        int width = board[0].length;
+        for (int y = 0; y < height; y++) {
+            String line = "|";
+            for (int x = 0; x < width; x++) {
+                if (board[x][y] == '.') {
+                    line += ".";
+                } else {
+                    line += "*";
+                }
+            }
+            line += "|";
+            System.out.println(line);
+        }
     }
     
-    static int FindNeighbors(char [][] A, int i, int j)
+    static int FindNeighbors(char [][] board, int x, int y)
     {
         int neighbors = 0;
-                                                  // i - 1
-                                                  // i + 1
-                                                  // j - 1
-                                                  // j + 1;
-        
-        int rows = A.length;                      // get number of rows
-        int cols = A[0].length;                   // get number of columns
-                                                  // if i == 0 set i-1 to last row
-                                                  // if i == rows-1, set i+1 to 
+        neighbors += getState(board,x - 1, y - 1);//diag left down: move 1 space left on x axis and 1 down on y axis
+        neighbors += getState(board,x, y - 1);// bottom: stay on current spot on x axis and 1 down on y axis
+        neighbors += getState(board,x + 1, y - 1);//diag right down: move 1 space right on x axis 1 down on y axis
 
-        
-        //System.out.println(iMOne + " " + iPOne + " " + jMOne + " " + jPOne);
-  
-        // See lect8 slide 35 to simplfy the below computations
-        
-        // Check top 3 neighbors
-        
-        
-        // Check middle 2 neighbors
-        
-        
-        // Check bottom 3 neighbors
-        
+        neighbors += getState(board,x - 1, y);//Left: move left 1 on x axis stay on current y axis
+        neighbors += getState(board,x + 1, y);//Right: move right 1 on x axis stay on current y axis
+
+        neighbors += getState(board,x - 1, y + 1);//diag left up: move 1 space left on x axis 1 up on y axis
+        neighbors += getState(board,x, y + 1);// top: stay on current spot on x axis and 1 up on y axis
+        neighbors += getState(board,x + 1, y + 1);//diag right up: move 1 space right on x axis 1 up on y axis
+
         return neighbors;
     }
-   
+
+    public static int getState(char[][] board, int x, int y) {
+        int height = board.length;
+        int width = board[0].length;
+        int state = 0;
+        if (x < 0 || x >= width) {
+            return 0;
+        }
+        if (y < 0 || y >= height) {
+            return 0;
+        }
+        if (board[x][y] == '*') {
+            state = 1;
+        }
+        return state;
+    }
 }
