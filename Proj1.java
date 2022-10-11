@@ -6,6 +6,12 @@
  * */
 import java.util.Scanner;
 import java.util.Arrays;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.util.*;
+import java.io.FileReader;
+
 public class Proj1
 {
     public static void main(String args[])
@@ -13,7 +19,8 @@ public class Proj1
       //  P1();
        // P2();
        // P3();
-        P4();
+       // P4();
+       P5();
     }
    
     static void P1()
@@ -305,14 +312,11 @@ public class Proj1
         for (int y = 0; y < height; y++) {
             String line = "|";
             for (int x = 0; x < width; x++) {
-                if (board[x][y] == '.') {
-                    line += ".";
-                } else {
-                    line += "*";
-                }
+                line += board[x][y];
             }
             line += "|";
             System.out.println(line);
+            
         }
     }
     
@@ -348,4 +352,47 @@ public class Proj1
         }
         return state;
     }
+
+    static void P5() {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("gameoflife.txt"));
+            int rows = 0;
+            int columns = 0;
+            String str;
+            List<String> lineList = new ArrayList<>(); //using list of strings to hold file lines after reading
+            //looping thru file line by line 
+            while ((str = br.readLine()) != null && str.length() != 0) {
+                rows++; // getting size of board rows
+                columns++; // getting size of board columns 
+                lineList.add(str); // adding file line into list 
+            }
+            br.close(); // closing file 
+
+            char[][] board = new char[rows][columns]; // creating 2D Array
+            for (int i = 0; i < columns; i++) {
+                String currentLine = lineList.get(i);
+                int idx = 0;
+                for (int row = 0; row < currentLine.length(); row++) {
+                    board[row][i] = currentLine.charAt(idx);
+                    idx++;
+                }
+            }
+
+            Scanner in = new Scanner(System.in);
+            System.out.println("Enter the number of generations:");
+            int nGens = in.nextInt();
+            in.close(); // closing in 
+            System.out.println("Start State");
+            PrintBoard(board);
+            for (int i = 0; i < nGens; i++) {
+                board = Iterate(board);
+                PrintBoard(board);
+            }
+            System.out.println("End State");
+
+        } catch (Exception e) {
+            System.out.println("Exception Occured:" + e.getMessage());
+        }
+    }
+
 }
